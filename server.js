@@ -1,24 +1,20 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
 
-const authRoutes = require('./routes/authRoutes.js');
-const accountRoutes = require('./routes/accountRoutes.js'); // aún no está implementado
+const authRoutes = require("./routes/authRoutes");
+const accountRoutes = require("./routes/accountRoutes");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // Rutas principales
-app.use('/api/auth', authRoutes);
-app.use('/api/accounts', accountRoutes); // comentar para evitar error
+app.use("/api/auth", authRoutes);
+app.use("/api/accounts", accountRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('Conectado a MongoDB');
-    app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
-  })
-  .catch(err => console.error('Error de conexión:', err));
+app.listen(PORT, () =>
+  console.log(`Servidor corriendo en http://localhost:${PORT}`)
+);
