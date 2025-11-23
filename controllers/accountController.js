@@ -69,17 +69,39 @@ exports.updateAccount = async (req, res) => {
   try {
     const id = Number(req.params.id);
 
+    let {
+      nombreServicio,
+      correoAcceso,
+      contrasenaAcceso,
+      notasAdicionales,
+      fechaExpiracion
+    } = req.body;
+
+
+    let fechaExp = null;
+
+    if (fechaExpiracion && fechaExpiracion.trim() !== "") {
+      // Convertir "2025-11-28" → Date real
+      fechaExp = new Date(`${fechaExpiracion}T00:00:00.000Z`);
+    }
+
     const updated = await prisma.streamingAccount.update({
       where: { id },
-      data: req.body
+      data: {
+        nombreServicio,
+        correoAcceso,
+        contrasenaAcceso,
+        notasAdicionales,
+        fechaExpiracion: fechaExp
+      }
     });
 
     res.json(updated);
+
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
-
 // Eliminar cuenta
 exports.deleteAccount = async (req, res) => {
   try {
