@@ -77,7 +77,7 @@ exports.updateAccount = async (req, res) => {
       fechaExpiracion
     } = req.body;
 
-
+    // 📌 Normalizar fecha
     let fechaExp = null;
 
     if (fechaExpiracion && fechaExpiracion.trim() !== "") {
@@ -102,6 +102,7 @@ exports.updateAccount = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
 // Eliminar cuenta
 exports.deleteAccount = async (req, res) => {
   try {
@@ -120,5 +121,35 @@ exports.deleteAccount = async (req, res) => {
     res.json({ message: "Cuenta eliminada" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+exports.updateProfiles = async (req, res) => {
+  try {
+    const accountId = Number(req.params.id);
+    const { perfiles } = req.body;
+
+    if (!accountId || !Array.isArray(perfiles)) {
+      return res.status(400).json({ error: 'Datos inválidos' });
+    }
+
+    await prisma.profile.deleteMany({
+      where: { streamingAccountId: accountId }
+    });
+
+    await prisma.profile.createMany({
+      data: perfiles.map(p => ({
+        nombrePerfil: p.nombrePerfil,
+        tienePin: p.tienePin,
+        pin: p.pin || null,
+        asignadoACliente: p.asignadoACliente || null,
+        estadoPerfil: p.estadoPerfil,
+        streamingAccountId: accountId
+      }))
+    });
+
+    res.json({ message: 'Perfiles actualizados correctamente' });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
