@@ -5,7 +5,8 @@ const {
   getAllAccounts,
   getAccountById,
   updateAccount,
-  deleteAccount
+  deleteAccount,
+  updateProfiles
 } = require('../controllers/accountController');
 
 const verifyToken = require('../middleware/authMiddleware');
@@ -18,5 +19,6 @@ router.get('/', getAllAccounts);
 router.get('/:id', getAccountById);
 router.put('/:id', updateAccount);
 router.delete('/:id', deleteAccount);
+router.put('/:id/profiles', updateProfiles)
 
 module.exports = router;
